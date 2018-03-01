@@ -58,6 +58,12 @@ public final class BottomMenu implements IMenu {
 
         mMenuViewGroup.addView(mContentView);
 
+        mMenuCover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
     }
 
     @Override

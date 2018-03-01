@@ -11,9 +11,10 @@
         android:background="#80000000" />
 
     <com.lilincpp.bottommenu.MenuViewGroup
+        android:background="#fff"
         android:id="@+id/ll_bottom_menu_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
         <!--菜单内容-->
     </com.lilincpp.bottommenu.MenuViewGroup>
 

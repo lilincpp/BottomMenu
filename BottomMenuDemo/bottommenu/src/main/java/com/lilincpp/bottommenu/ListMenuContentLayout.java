@@ -31,8 +31,7 @@ class ListMenuContentLayout extends LinearLayout {
     private static final int LAYOUT_SHOW_MAX_ITEM_ROW = 4; //菜单列表，最多显示4行，多余的需要滑动查看
 
 
-
-    private int PADDING16;
+    private int PADDING16, DrawableLimitSize;
     private TextView mTitle;
     private TableLayout mMenuItemList;
     private List<BottomMenu.MenuItem> mItems;
@@ -54,6 +53,7 @@ class ListMenuContentLayout extends LinearLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         PADDING16 = (int) dp2px(16, getDisplayMetrics());
+        DrawableLimitSize = (int) dp2px(32, getDisplayMetrics());
         mTitle = findViewById(R.id.ll_bottom_menu_tv_title);
         mMenuItemList = findViewById(R.id.ll_bottom_menu_tl_list);
     }
@@ -132,7 +132,11 @@ class ListMenuContentLayout extends LinearLayout {
         tv.setPadding(PADDING16, PADDING16, PADDING16, PADDING16);
         if (item.drawable != null) {
             //控制绘制图片宽高
-            item.drawable.setBounds(0, 0, item.drawable.getMinimumWidth(), item.drawable.getMinimumHeight());
+            int width = item.drawable.getMinimumWidth() > DrawableLimitSize ?
+                    DrawableLimitSize : item.drawable.getMinimumWidth();
+            int height = item.drawable.getMinimumHeight() > DrawableLimitSize ?
+                    DrawableLimitSize : item.drawable.getMinimumHeight();
+            item.drawable.setBounds(0, 0, width, height);
             if (mLayoutType == LAYOUT_TYPE_LINEAR) {
                 tv.setGravity(Gravity.LEFT | Gravity.START | Gravity.CENTER_VERTICAL);
                 tv.setCompoundDrawablePadding(PADDING16);
