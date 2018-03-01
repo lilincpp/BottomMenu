@@ -73,13 +73,29 @@ public final class BottomMenu implements IMenu {
     public void show() {
         if (!mShowing && !mAnimRunning) {
             if (mMenuView.getParent() == null) {
+
+                if (mDefaultMenuLayout != null) {
+                    mDefaultMenuLayout.create();
+                }
+
+                measure();
+
                 animIn();
             }
         }
     }
 
+    private void measure() {
+        int w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        int h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+
+        mMenuView.measure(w, h);
+        mContentHeight = mMenuView.getMeasuredHeight();
+    }
+
     private void animIn() {
-        ObjectAnimator animator = ObjectAnimator.ofFloat(mMenuViewGroup, "translationY", mContentHeight, 0);
+        ObjectAnimator animator = ObjectAnimator.ofFloat(mMenuViewGroup,
+                "translationY", mContentHeight, 0);
         animator.setDuration(ANIMATION_DURATION);
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -105,7 +121,8 @@ public final class BottomMenu implements IMenu {
     }
 
     private void animOut() {
-        ObjectAnimator animator = ObjectAnimator.ofFloat(mMenuViewGroup, "translationY", 0, mContentHeight);
+        ObjectAnimator animator = ObjectAnimator.ofFloat(mMenuViewGroup,
+                "translationY", 0, mContentHeight);
         animator.setDuration(ANIMATION_DURATION);
         animator.addListener(new AnimatorListenerAdapter() {
             @Override

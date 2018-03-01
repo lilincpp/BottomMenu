@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.FrameLayout;
 
 /**
@@ -11,6 +12,8 @@ import android.widget.FrameLayout;
  */
 
 public class MenuViewGroup extends FrameLayout {
+
+    private static final String TAG = "MenuViewGroup";
 
     public MenuViewGroup(@NonNull Context context) {
         super(context);
@@ -27,6 +30,7 @@ public class MenuViewGroup extends FrameLayout {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
+        Log.e(TAG, "onLayout: " );
         if (mListener != null) {
             mListener.onLayoutChange();
         }
