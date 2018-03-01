@@ -10,11 +10,11 @@
         android:layout_height="match_parent"
         android:background="#80000000" />
 
-    <FrameLayout
+    <com.lilincpp.bottommenu.MenuViewGroup
         android:id="@+id/ll_bottom_menu_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <!--菜单内容-->
-    </FrameLayout>
+    </com.lilincpp.bottommenu.MenuViewGroup>
 
 </FrameLayout>

@@ -1,8 +1,14 @@
 package com.lilincpp.bottommenu;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.view.ViewCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,28 +24,110 @@ import java.util.ArrayList;
 
 public final class BottomMenu implements IMenu {
 
+    private static final long ANIMATION_DURATION = 200;
+
     private ViewGroup mRootViewGroup;
-    private View mContentView;
-    private MenuContentLayout mDefaultMenuLayout;
+    private View mMenuView; //菜单整个布局
+    private View mMenuCover; //菜单遮盖层
+    private View mContentView; //用户设置的内容布局
+    private MenuViewGroup mMenuViewGroup;
+    private ListMenuContentLayout mDefaultMenuLayout;
+
+    private Context mContext;
+    private boolean mShowing, mAnimRunning;
+    private int mContentHeight;
+
+    private Message mMessageShow;
+    private Message mMessageDismiss;
 
     private BottomMenu(BottomMenu.Builder builder) {
         mRootViewGroup = builder.rootViewGroup;
+        mContext = builder.rootViewGroup.getContext();
+
+        mMenuView = LayoutInflater.from(mContext).inflate(R.layout.ll_bottom_menu_layout, null, false);
+        mMenuCover = mMenuView.findViewById(R.id.ll_bottom_menu_cover);
+        mMenuViewGroup = mMenuView.findViewById(R.id.ll_bottom_menu_content);
+
         mContentView = builder.contentView;
-        if (builder.contentView instanceof MenuContentLayout) {
-            mDefaultMenuLayout = (MenuContentLayout) builder.contentView;
+
+        if (builder.contentView instanceof ListMenuContentLayout) {
+            mDefaultMenuLayout = (ListMenuContentLayout) builder.contentView;
             mDefaultMenuLayout.setItems(builder.items);
             mDefaultMenuLayout.setLayoutType(builder.defaultLayoutType);
         }
+
+        mMenuViewGroup.addView(mContentView);
+
     }
 
     @Override
     public void dismiss() {
-
+        if (mShowing && !mAnimRunning) {
+            if (mMenuView.getParent() != null) {
+                animOut();
+            }
+        }
     }
 
     @Override
     public void show() {
+        if (!mShowing && !mAnimRunning) {
+            if (mMenuView.getParent() == null) {
+                animIn();
+            }
+        }
+    }
 
+    private void animIn() {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(mMenuViewGroup, "translationY", mContentHeight, 0);
+        animator.setDuration(ANIMATION_DURATION);
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                mRootViewGroup.addView(mMenuView);
+                mMenuCover.setVisibility(View.VISIBLE);
+                mAnimRunning = true;
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mShowing = true;
+            }
+        });
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                final float value = (float) animation.getAnimatedValue();
+                mMenuCover.setAlpha(1 - value / mContentHeight);
+            }
+        });
+        animator.start();
+    }
+
+    private void animOut() {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(mMenuViewGroup, "translationY", 0, mContentHeight);
+        animator.setDuration(ANIMATION_DURATION);
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                mAnimRunning = true;
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mShowing = false;
+                mMenuCover.setVisibility(View.GONE);
+                mRootViewGroup.removeView(mMenuView);
+            }
+        });
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                final float value = (float) animation.getAnimatedValue();
+                mMenuCover.setAlpha(1 - value / mContentHeight);
+            }
+        });
+        animator.start();
     }
 
     private static class ListenerHandler extends Handler {
@@ -55,7 +143,12 @@ public final class BottomMenu implements IMenu {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
+                case MESSAGE_SHOW:
 
+                    break;
+                case MESSAGE_DISMISS:
+
+                    break;
             }
         }
     }
@@ -63,7 +156,7 @@ public final class BottomMenu implements IMenu {
     public static final class Builder {
         ViewGroup rootViewGroup;
         View contentView;
-        int defaultLayoutType = MenuContentLayout.LAYOUT_TYPE_LINEAR;
+        int defaultLayoutType = ListMenuContentLayout.LAYOUT_TYPE_LINEAR;
         java.util.List<MenuItem> items = new ArrayList<>();
 
         public Builder(View view) {
@@ -76,12 +169,12 @@ public final class BottomMenu implements IMenu {
         }
 
         public Builder gridLayout() {
-            defaultLayoutType = MenuContentLayout.LAYOUT_TYPE_GRID;
+            defaultLayoutType = ListMenuContentLayout.LAYOUT_TYPE_GRID;
             return this;
         }
 
         public Builder linearLayout() {
-            defaultLayoutType = MenuContentLayout.LAYOUT_TYPE_LINEAR;
+            defaultLayoutType = ListMenuContentLayout.LAYOUT_TYPE_LINEAR;
             return this;
         }
 

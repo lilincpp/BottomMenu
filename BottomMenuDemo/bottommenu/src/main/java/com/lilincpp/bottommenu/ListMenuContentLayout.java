@@ -13,7 +13,7 @@ import java.util.List;
  * Created by lilin on 2018/2/27.
  */
 
-class MenuContentLayout extends LinearLayout {
+class ListMenuContentLayout extends LinearLayout {
 
     static final int LAYOUT_TYPE_GRID = 0x01; //网格模式
     static final int LAYOUT_TYPE_LINEAR = 0x02; //线性模式
@@ -23,15 +23,15 @@ class MenuContentLayout extends LinearLayout {
     private List<BottomMenu.MenuItem> mItems;
     private int mLayoutType = LAYOUT_TYPE_LINEAR;
 
-    public MenuContentLayout(Context context) {
+    public ListMenuContentLayout(Context context) {
         super(context);
     }
 
-    public MenuContentLayout(Context context, @Nullable AttributeSet attrs) {
+    public ListMenuContentLayout(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public MenuContentLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ListMenuContentLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
