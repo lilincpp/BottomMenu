@@ -11,7 +11,7 @@ import android.widget.FrameLayout;
  * Created by Administrator on 2018/3/1.
  */
 
-public class MenuViewGroup extends FrameLayout {
+public final class MenuViewGroup extends FrameLayout {
 
     private static final String TAG = "MenuViewGroup";
 

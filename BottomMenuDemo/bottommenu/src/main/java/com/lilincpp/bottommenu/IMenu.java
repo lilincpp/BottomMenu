@@ -11,14 +11,14 @@ public interface IMenu {
     void show();
 
     interface OnItemClickListener {
-        void onClick();
+        void onItemClick(IMenu menu, int position);
     }
 
     interface OnDismissListener {
-        void onDismiss();
+        void onDismiss(IMenu menu);
     }
 
     interface OnShowListener {
-        void onShow();
+        void onShow(IMenu menu);
     }
 }

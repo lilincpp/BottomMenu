@@ -11,6 +11,7 @@ import android.os.Message;
 import android.support.v4.view.ViewCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
  * Created by lilin on 2018/2/27.
  */
 
-public final class BottomMenu implements IMenu {
+public final class BottomMenu implements IMenu, View.OnClickListener {
 
     private static final String TAG = "BottomMenu";
     private static final long ANIMATION_DURATION = 200;
@@ -37,10 +38,12 @@ public final class BottomMenu implements IMenu {
 
     private Context mContext;
     private boolean mShowing, mAnimRunning;
-    private int mContentHeight;
+    private int mContentHeight = -1;
 
+    private ListenerHandler mListenerHandler = new ListenerHandler(this);
     private Message mMessageShow;
     private Message mMessageDismiss;
+    private Message mMessageItemClick;
 
     private BottomMenu(BottomMenu.Builder builder) {
         mRootViewGroup = builder.rootViewGroup;
@@ -56,16 +59,10 @@ public final class BottomMenu implements IMenu {
             mDefaultMenuLayout = (ListMenuContentLayout) builder.contentView;
             mDefaultMenuLayout.setItems(builder.items);
             mDefaultMenuLayout.setLayoutType(builder.defaultLayoutType);
+            mDefaultMenuLayout.setOnItenClickListener(this);
         }
-
         mMenuViewGroup.addView(mContentView);
-
-        mMenuCover.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
+        mMenuCover.setOnClickListener(this);
     }
 
     @Override
@@ -91,12 +88,42 @@ public final class BottomMenu implements IMenu {
         }
     }
 
-    private void measure() {
-        int w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-        int h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+    @Override
+    public void onClick(View v) {
+        sendItemClickMessage((int) v.getTag());
+    }
 
-        mMenuView.measure(w, h);
-        mContentHeight = mMenuView.getMeasuredHeight();
+    public void addOnDismissListener(IMenu.OnDismissListener listener) {
+        if (listener != null) {
+            mMessageDismiss = mListenerHandler.obtainMessage(ListenerHandler.MESSAGE_DISMISS, listener);
+        } else {
+            mMessageDismiss = null;
+        }
+    }
+
+    public void addOnShowListener(IMenu.OnShowListener listener) {
+        if (listener != null) {
+            mMessageShow = mListenerHandler.obtainMessage(ListenerHandler.MESSAGE_SHOW, listener);
+        } else {
+            mMessageShow = null;
+        }
+    }
+
+    public void addOnItemClickListener(IMenu.OnItemClickListener listener) {
+        if (listener != null) {
+            mMessageItemClick = mListenerHandler.obtainMessage(ListenerHandler.MESSAGE_ITEM_CLICK, listener);
+        } else {
+            mMessageItemClick = null;
+        }
+    }
+
+    private void measure() {
+        if (mContentHeight == -1) { //未进行测量
+            int w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+            int h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+            mMenuView.measure(w, h);
+            mContentHeight = mMenuView.getMeasuredHeight();
+        }
     }
 
     private void animIn() {
@@ -115,6 +142,7 @@ public final class BottomMenu implements IMenu {
             public void onAnimationEnd(Animator animation) {
                 mShowing = true;
                 mAnimRunning = false;
+                sendShowMessage();
             }
         });
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -143,6 +171,7 @@ public final class BottomMenu implements IMenu {
                 mRootViewGroup.removeView(mMenuView);
                 mShowing = false;
                 mAnimRunning = false;
+                sendDismissMessage();
             }
         });
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -155,6 +184,26 @@ public final class BottomMenu implements IMenu {
         animator.start();
     }
 
+    private void sendShowMessage() {
+        if (mMessageShow != null) {
+            Message.obtain(mMessageShow).sendToTarget();
+        }
+    }
+
+    private void sendDismissMessage() {
+        if (mMessageDismiss != null) {
+            Message.obtain(mMessageDismiss).sendToTarget();
+        }
+    }
+
+    private void sendItemClickMessage(int position) {
+        if (mMessageItemClick != null) {
+            Message message = Message.obtain(mMessageItemClick);
+            message.arg1 = position;
+            message.sendToTarget();
+        }
+    }
+
     private static class ListenerHandler extends Handler {
         WeakReference<IMenu> menu;
 
@@ -164,15 +213,19 @@ public final class BottomMenu implements IMenu {
 
         static final int MESSAGE_SHOW = 0x01;
         static final int MESSAGE_DISMISS = 0x02;
+        static final int MESSAGE_ITEM_CLICK = 0x03;
 
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MESSAGE_SHOW:
-
+                    ((IMenu.OnShowListener) msg.obj).onShow(menu.get());
                     break;
                 case MESSAGE_DISMISS:
-
+                    ((IMenu.OnDismissListener) msg.obj).onDismiss(menu.get());
+                    break;
+                case MESSAGE_ITEM_CLICK:
+                    ((IMenu.OnItemClickListener) msg.obj).onItemClick(menu.get(), msg.arg1);
                     break;
             }
         }

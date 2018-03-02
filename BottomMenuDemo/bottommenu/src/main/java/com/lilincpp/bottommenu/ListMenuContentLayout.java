@@ -9,7 +9,6 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -23,7 +22,7 @@ import java.util.List;
  * Created by lilin on 2018/2/27.
  */
 
-class ListMenuContentLayout extends LinearLayout implements View.OnClickListener {
+final class ListMenuContentLayout extends LinearLayout implements View.OnClickListener {
 
     static final int LAYOUT_TYPE_GRID = 0x01; //网格模式
     static final int LAYOUT_TYPE_LINEAR = 0x02; //线性模式
@@ -32,10 +31,11 @@ class ListMenuContentLayout extends LinearLayout implements View.OnClickListener
     private static final int LAYOUT_SHOW_MAX_ITEM_ROW = 4; //菜单列表，最多显示4行，多余的需要滑动查看
 
 
-    private int PADDING16, PADDING32, PADDING64;
+    private int DP16, DP32, DP64;
     private TextView mTitle;
     private TableLayout mMenuItemList;
     private List<BottomMenu.MenuItem> mItems;
+    private View.OnClickListener mOnItemClickListener;
     private int mLayoutType = LAYOUT_TYPE_LINEAR;
 
     public ListMenuContentLayout(Context context) {
@@ -53,11 +53,15 @@ class ListMenuContentLayout extends LinearLayout implements View.OnClickListener
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        PADDING16 = (int) dp2px(16, getDisplayMetrics());
-        PADDING32 = (int) dp2px(32, getDisplayMetrics());
-        PADDING64 = (int) dp2px(64, getDisplayMetrics());
+        DP16 = (int) dp2px(16, getDisplayMetrics());
+        DP32 = (int) dp2px(32, getDisplayMetrics());
+        DP64 = (int) dp2px(64, getDisplayMetrics());
         mTitle = findViewById(R.id.ll_bottom_menu_tv_title);
         mMenuItemList = findViewById(R.id.ll_bottom_menu_tl_list);
+    }
+
+    void setOnItenClickListener(View.OnClickListener listener) {
+        mOnItemClickListener = listener;
     }
 
     TextView getTitleView() {
@@ -85,11 +89,11 @@ class ListMenuContentLayout extends LinearLayout implements View.OnClickListener
             //网格布局的时候，增加边距
             if (mLayoutType == LAYOUT_TYPE_GRID) {
                 FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mMenuItemList.getLayoutParams();
-                params.leftMargin = PADDING16;
-                params.rightMargin = PADDING16;
-                params.bottomMargin = PADDING16;
+                params.leftMargin = DP16;
+                params.rightMargin = DP16;
+                params.bottomMargin = DP16;
                 if (mTitle.getVisibility() == GONE) {
-                    params.topMargin = PADDING16;
+                    params.topMargin = DP16;
                 }
             }
 
@@ -99,9 +103,7 @@ class ListMenuContentLayout extends LinearLayout implements View.OnClickListener
                 final TableRow row = getRow(i);
                 final View item = inflateMenuItem(mItems.get(i));
                 item.setTag(i);
-
                 row.addView(item);
-
             }
         }
         measure();
@@ -109,7 +111,9 @@ class ListMenuContentLayout extends LinearLayout implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-
+        if (mOnItemClickListener != null) {
+            mOnItemClickListener.onClick(v);
+        }
     }
 
     private TableRow getRow(int inflatePosition) {
@@ -137,23 +141,23 @@ class ListMenuContentLayout extends LinearLayout implements View.OnClickListener
         TextView tv = new TextView(getContext());
         tv.setText(TextUtils.isEmpty(item.name) ? " " : item.name);
         tv.setTextColor(Color.BLACK);
-        tv.setPadding(PADDING16, PADDING16, PADDING16, PADDING16);
+        tv.setPadding(DP16, DP16, DP16, DP16);
         if (item.drawable != null) {
             //控制绘制图片宽高
-            final int width = item.drawable.getMinimumWidth() > PADDING32 ?
-                    PADDING32 : item.drawable.getMinimumWidth();
-            final int height = item.drawable.getMinimumHeight() > PADDING32 ?
-                    PADDING32 : item.drawable.getMinimumHeight();
+            final int width = item.drawable.getMinimumWidth() > DP32 ?
+                    DP32 : item.drawable.getMinimumWidth();
+            final int height = item.drawable.getMinimumHeight() > DP32 ?
+                    DP32 : item.drawable.getMinimumHeight();
             item.drawable.setBounds(0, 0, width, height);
             if (mLayoutType == LAYOUT_TYPE_LINEAR) {
                 //线性布局
                 tv.setGravity(Gravity.LEFT | Gravity.START | Gravity.CENTER_VERTICAL);
-                tv.setCompoundDrawablePadding(PADDING16);
+                tv.setCompoundDrawablePadding(DP16);
                 tv.setCompoundDrawables(item.drawable, null, null, null);
             } else {
                 //网格布局
                 tv.setGravity(Gravity.CENTER);
-                tv.setCompoundDrawablePadding((PADDING16 / 2));
+                tv.setCompoundDrawablePadding((DP16 / 2));
                 tv.setCompoundDrawables(null, item.drawable, null, null);
             }
         }
@@ -182,7 +186,8 @@ class ListMenuContentLayout extends LinearLayout implements View.OnClickListener
         return getContext().getResources().getDisplayMetrics();
     }
 
-    public static float dp2px(@NonNull float dp, @NonNull DisplayMetrics metrics) {
+    static float dp2px(@NonNull float dp, @NonNull DisplayMetrics metrics) {
         return dp * metrics.density;
     }
+
 }
