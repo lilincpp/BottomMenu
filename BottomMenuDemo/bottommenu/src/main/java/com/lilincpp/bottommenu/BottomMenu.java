@@ -8,10 +8,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.view.ViewCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -29,7 +26,7 @@ public final class BottomMenu implements IMenu, View.OnClickListener {
     private static final String TAG = "BottomMenu";
     private static final long ANIMATION_DURATION = 200;
 
-    private ViewGroup mRootViewGroup;
+    private ViewGroup mRootViewGroup;//DecorView中的Content
     private View mMenuView; //菜单整个布局
     private View mMenuCover; //菜单遮盖层
     private View mContentView; //用户设置的内容布局
@@ -90,7 +87,11 @@ public final class BottomMenu implements IMenu, View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        sendItemClickMessage((int) v.getTag());
+        if (v.getId() == R.id.ll_bottom_menu_cover) {
+            dismiss();
+        } else {
+            sendItemClickMessage((int) v.getTag());
+        }
     }
 
     public void addOnDismissListener(IMenu.OnDismissListener listener) {

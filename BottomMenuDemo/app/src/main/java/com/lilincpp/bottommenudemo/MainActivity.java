@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.lilincpp.bottommenu.BottomMenu;
 import com.lilincpp.bottommenu.IMenu;
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onItemClick(IMenu menu, int position) {
                         Log.e(TAG, "onItemClick: ");
+                        Toast.makeText(MainActivity.this, "点击 position=" + position, Toast.LENGTH_SHORT).show();
                     }
                 });
                 menu.show();
