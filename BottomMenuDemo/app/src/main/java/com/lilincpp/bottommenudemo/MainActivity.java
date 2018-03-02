@@ -38,31 +38,35 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 BottomMenu.Builder builder = new BottomMenu.Builder(v);
                 builder.gridLayout()
-                        .addItem("你好", ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_launcher_background))
-                        .addItem("你好", ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_launcher_background))
-                        .addItem("你好", ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_launcher_background))
-                        .addItem("你好", ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_launcher_background))
-                        .addItem("你好", ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_launcher_background));
+                        .addItem("你好",
+                                ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_launcher_background))
+                        .addItem("你好",
+                                ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_launcher_background))
+                        .addItem("你好",
+                                ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_launcher_background))
+                        .addItem("你好",
+                                ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_launcher_background))
+                        .addItem("你好",
+                                ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_launcher_background));
                 BottomMenu menu = builder.create();
                 menu.addOnDismissListener(new IMenu.OnDismissListener() {
                     @Override
                     public void onDismiss(IMenu menu) {
-                        Log.e(TAG, "onDismiss: ");
+                       //TODO SOMETHING
                     }
                 });
 
                 menu.addOnShowListener(new IMenu.OnShowListener() {
                     @Override
                     public void onShow(IMenu menu) {
-                        Log.e(TAG, "onShow: ");
+                        //TODO SOMETHING
                     }
                 });
 
                 menu.addOnItemClickListener(new IMenu.OnItemClickListener() {
                     @Override
                     public void onItemClick(IMenu menu, int position) {
-                        Log.e(TAG, "onItemClick: ");
-                        Toast.makeText(MainActivity.this, "点击 position=" + position, Toast.LENGTH_SHORT).show();
+                        //TODO SOMETHING
                     }
                 });
                 menu.show();
