@@ -14,13 +14,14 @@
 ```java
 	BottomMenu.Builder builder = new BottomMenu.Builder(v);
 	builder
-	.gridLayout()
-	.addItem("你好","Your Drawable")
-    .addItem("你好","Your Drawable")
-	.addItem("你好","Your Drawable")
-	.addItem("你好","Your Drawable")
+		.gridLayout()
+		.addItem("你好","Your Drawable")
+		.addItem("你好","Your Drawable")
+		.addItem("你好","Your Drawable")
+		.addItem("你好","Your Drawable");
                 
 	BottomMenu menu = builder.create();
+	
 	menu.addOnDismissListener(new IMenu.OnDismissListener() {
 		@Override
 		public void onDismiss(IMenu menu) {
