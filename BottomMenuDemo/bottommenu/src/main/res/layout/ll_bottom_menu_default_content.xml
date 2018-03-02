@@ -2,6 +2,7 @@
 <com.lilincpp.bottommenu.ListMenuContentLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
     android:orientation="vertical">
 
     <!--菜单标题-->
@@ -19,7 +20,9 @@
         <TableLayout
             android:id="@+id/ll_bottom_menu_tl_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:stretchColumns="*"
+            >
             <!--菜单子项填充-->
         </TableLayout>
 

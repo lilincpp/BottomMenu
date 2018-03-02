@@ -13,6 +13,7 @@
     <com.lilincpp.bottommenu.MenuViewGroup
         android:background="#fff"
         android:id="@+id/ll_bottom_menu_content"
+        android:layout_gravity="bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <!--菜单内容-->

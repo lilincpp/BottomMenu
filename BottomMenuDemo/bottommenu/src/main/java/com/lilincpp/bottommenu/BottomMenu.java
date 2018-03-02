@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 
 public final class BottomMenu implements IMenu {
 
+    private static final String TAG = "BottomMenu";
     private static final long ANIMATION_DURATION = 200;
 
     private ViewGroup mRootViewGroup;
@@ -83,9 +85,7 @@ public final class BottomMenu implements IMenu {
                 if (mDefaultMenuLayout != null) {
                     mDefaultMenuLayout.create();
                 }
-
                 measure();
-
                 animIn();
             }
         }
@@ -114,6 +114,7 @@ public final class BottomMenu implements IMenu {
             @Override
             public void onAnimationEnd(Animator animation) {
                 mShowing = true;
+                mAnimRunning = false;
             }
         });
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -138,9 +139,10 @@ public final class BottomMenu implements IMenu {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                mShowing = false;
                 mMenuCover.setVisibility(View.GONE);
                 mRootViewGroup.removeView(mMenuView);
+                mShowing = false;
+                mAnimRunning = false;
             }
         });
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
