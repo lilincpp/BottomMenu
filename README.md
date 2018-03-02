@@ -2,14 +2,14 @@
 
 快速集成市面上主流的底部菜单栏
 
-### 效果
+效果
+----
 
 ![](https://github.com/lilincpp/BottomMenu/blob/master/picture/effect1.png)
 ![](https://github.com/lilincpp/BottomMenu/blob/master/picture/effect3.png)
 
-
-### 如何使用
-
+如何使用
+--------
 
 ```java
 	BottomMenu.Builder builder = new BottomMenu.Builder(v);
@@ -46,6 +46,7 @@
 	menu.show();
 ```
 
-### License
+License
+-------
 
 TicketView binaries and source code can be used according to the [Apache License, Version 2.0](https://github.com/lilincpp/BottomMenu/blob/master/LICENSE).
