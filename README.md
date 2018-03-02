@@ -5,7 +5,7 @@
 ### 效果
 
 ![](https://github.com/lilincpp/BottomMenu/blob/master/picture/effect1.png)
-![](https://github.com/lilincpp/BottomMenu/blob/master/picture/effect2.png)
+![](https://github.com/lilincpp/BottomMenu/blob/master/picture/effect3.png)
 
 
 ### 如何使用
