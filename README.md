@@ -49,4 +49,4 @@
 License
 -------
 
-TicketView binaries and source code can be used according to the [Apache License, Version 2.0](https://github.com/lilincpp/BottomMenu/blob/master/LICENSE).
+BottomMenu binaries and source code can be used according to the [Apache License, Version 2.0](https://github.com/lilincpp/BottomMenu/blob/master/LICENSE).
