@@ -1,5 +1,13 @@
 apply plugin: 'com.android.library'
 
+//JCenter配置
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.github.dcendents.android-maven'
+//地址组成:
+//[groupId]:[artifactId]:[version]
+group = 'com.github.lilincpp' //groupId
+version = '0.0.1' //版本号
+
 android {
     compileSdkVersion 26
 
@@ -9,7 +17,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 26
         versionCode 1
-        versionName "1.0"
+        versionName "0.0.1"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -28,7 +36,59 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation 'com.android.support:appcompat-v7:26.1.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+//    testImplementation 'junit:junit:4.12'
+//    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+//    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+}
+
+task generateSourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier 'sources'
+}
+
+task generateJavadocs(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task generateJavadocsJar(type: Jar, dependsOn: generateJavadocs) {
+    from generateJavadocs.destinationDir
+    classifier 'javadoc'
+}
+
+artifacts {
+    archives generateJavadocsJar
+    archives generateSourcesJar
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+
+    pkg {
+        repo = 'android' //JCenter仓库的名称
+        name = 'BottomMenu' //JCenter的项目名字
+
+        version {
+            name = '0.0.1'
+            desc = "Custom Bottom Menu for Android."
+            vcsTag = '0.0.1'
+        }
+
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/lilincpp/BottomMenu.git'
+        websiteUrl = 'https://github.com/lilincpp/BottomMenu'
+    }
+
+    configurations = ['archives']
+
+}
+
+tasks.withType(Javadoc) {
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.addStringOption('encoding', 'UTF-8')
+    options.addStringOption('charSet', 'UTF-8')
 }
