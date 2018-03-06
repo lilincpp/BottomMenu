@@ -1,6 +1,19 @@
 # BottomMenu
+[ ![Download](https://api.bintray.com/packages/lilincpp/android/BottomMenu/images/download.svg) ](https://bintray.com/lilincpp/android/BottomMenu/_latestVersion)
 
 快速集成市面上主流的底部菜单栏
+
+集成
+--------
+
+```
+<dependency>
+  <groupId>com.github.lilincpp</groupId>
+  <artifactId>bottommenu</artifactId>
+  <version>0.0.1</version>
+  <type>pom</type>
+</dependency>
+```
 
 效果
 ----
