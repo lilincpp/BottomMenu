@@ -3,7 +3,14 @@
 
 快速集成市面上主流的底部菜单栏
 
-集成
+Gradle
+------
+
+```
+compile 'com.github.lilincpp:bottommenu:0.0.1'
+```
+
+Maven
 --------
 
 ```
