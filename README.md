@@ -28,7 +28,7 @@ Maven
 ![](https://github.com/lilincpp/BottomMenu/blob/master/picture/effect1.png)
 ![](https://github.com/lilincpp/BottomMenu/blob/master/picture/effect3.png)
 
-如何使用
+使用
 --------
 
 ```java
